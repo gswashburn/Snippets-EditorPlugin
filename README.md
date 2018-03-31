@@ -1,6 +1,6 @@
 # Snippets Editor Plugin Script
 
-A simlpe script for the godot engine 3.0 to make manage code snippets.
+A simlpe script for the godot engine 3.x to make manage code snippets in your projects.
 
 ## License
 

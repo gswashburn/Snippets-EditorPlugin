@@ -1,4 +1,4 @@
-# Snippets Editor Plugin Script
+Snippets Editor Plugin Script
 
 An editor plugin for Godot Engine 3.x to manage code snippets in your projects.
 

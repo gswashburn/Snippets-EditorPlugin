@@ -1,6 +1,6 @@
 # Snippets Editor Plugin Script
 
-An editor plugin for Godot engine 3.x to make manage code snippets in your projects.
+An editor plugin for Godot Engine 3.x to manage code snippets in your projects.
 
 Snippets are small pieces of code you use over and over in your game development lifecycle.
 This plugin allows you to copy and paste them to your current game script editor. It also

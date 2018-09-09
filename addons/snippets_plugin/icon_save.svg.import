@@ -2,12 +2,12 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/icon_reload.svg-c28df8024cd76ce849be0006b09e42cc.stex"
+path="res://.import/icon_save.svg-c3d043ea60de789f13600fb5795b35dc.stex"
 
 [deps]
 
-source_file="res://addons/snippets_plugin/icon_reload.svg"
-dest_files=[ "res://.import/icon_reload.svg-c28df8024cd76ce849be0006b09e42cc.stex" ]
+source_file="res://addons/snippets_plugin/icon_save.svg"
+dest_files=[ "res://.import/icon_save.svg-c3d043ea60de789f13600fb5795b35dc.stex" ]
 
 [params]
 

@@ -7,10 +7,7 @@ path="res://.import/icon_script_create.svg-4ba46d8095fc932af16f546a8fde3a0a.stex
 [deps]
 
 source_file="res://addons/snippets_plugin/icon_script_create.svg"
-source_md5="603b67059c21cbad158938833834fe4a"
-
 dest_files=[ "res://.import/icon_script_create.svg-4ba46d8095fc932af16f546a8fde3a0a.stex" ]
-dest_md5="4033257f8e883f4d201e0cd9333c5944"
 
 [params]
 

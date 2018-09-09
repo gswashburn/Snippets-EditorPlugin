@@ -7,10 +7,7 @@ path="res://.import/icon_remove.svg-e981315c21fa78e906a62f154ec931d5.stex"
 [deps]
 
 source_file="res://addons/snippets_plugin/icon_remove.svg"
-source_md5="a215dd8a992e9d84dcaf300fd1538737"
-
 dest_files=[ "res://.import/icon_remove.svg-e981315c21fa78e906a62f154ec931d5.stex" ]
-dest_md5="80fb2e2ea54d2400f31588a32dc8f92c"
 
 [params]
 

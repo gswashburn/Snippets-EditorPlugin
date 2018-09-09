@@ -5,6 +5,7 @@ var snippets_path = ""
 var ext_editor_path = ""
 var config = ConfigFile.new()
 
+
 func _ready():
 	# Get Initial Snippets Path
 	get_snippets_path()
@@ -45,14 +46,20 @@ func add_files_to_tree(files):
 	$menu/Tree.set_column_expand(0, true)
 	# Hide the root (only display children)
 	$menu/Tree.set_hide_root(true)
-	
+
 	for file in files:
 		var file_node = $menu/Tree.create_item(root)
 		# Metadata is used in order to double click
 		# the item and copy the file to clipboard
 		file_node.set_metadata(0, snippets_path + "/" + file)
+		# Add Default Snippet description to metadat
+		file_node.set_metadata(1, "Snippet Description goes here...")
 		# The text/name that is displayed in the content tree
 		file_node.set_text(0, file)
+
+	# Hide the Description Column
+	$menu/Tree.set_column_expand(1,false)
+
 
 func list_files_in_directory(path):
 	# List files in a folder
@@ -71,12 +78,12 @@ func list_files_in_directory(path):
 	        files.append(file)
 	dir.list_dir_end()
 	return files
-	
+
 func deletefile(path):
 	# Delete file in a folder
 	var dir = Directory.new()
 	dir.remove(path)
-	
+
 
 func savefile(content, path):
 	# save text content to file
@@ -150,26 +157,42 @@ func _on_Tree_item_selected():
 	pass
 
 func _on_SnipMenu_id_pressed(ID):
-	if ID == 0:
-		if not ext_editor_path == "":
-			# use external editor
-#			print(ext_editor_path)
-			update_statusbar("Opened in External Editor...")
-			var args = PoolStringArray()
-			# get file path from tree node metadata
-			args.append($menu/Tree.get_selected().get_metadata(0))
-			OS.execute(ext_editor_path, args, false)
-		else:
-			# use shell editor for txt files
-			update_statusbar("Handled by txt extension...")
-			OS.shell_open($menu/Tree.get_selected().get_metadata(0))
+	match ID:
+		0: # Edit file in internal editor
+			int_editor()
+		1: # Edit file in external editor if defined
+			if not ext_editor_path == "":
+				ext_editor()
+			else:
+				# Popup error msg if ext editor not defined
+				update_statusbar("External Editor not configured...")
+		2: # Show file in file manager
+			print("Show in File Manager")
+	#		print($menu/Tree.get_selected().get_metadata(0).get_base_dir())
+			update_statusbar("Opened in File Manager...")
+			OS.shell_open($menu/Tree.get_selected().get_metadata(0).get_base_dir())
 
-	if ID == 1:
-#		print("Show in File Manager")
-#		print($menu/Tree.get_selected().get_metadata(0).get_base_dir())
-		update_statusbar("Opened in File Manager...")
-		OS.shell_open($menu/Tree.get_selected().get_metadata(0).get_base_dir())
-	
+func ext_editor():
+	# use external editor
+	update_statusbar("Opened in External Editor...")
+	# get file path from tree node metadata
+	var path = $menu/Tree.get_selected().get_metadata(0)
+	var args = PoolStringArray()
+	args.append(path)
+	OS.execute(ext_editor_path, args, false)
+
+func shell_editor():
+	# use shell editor for txt files
+	var path = $menu/Tree.get_selected().get_metadata(0)
+	update_statusbar("Handled by txt extension...")
+	OS.shell_open(path)
+
+func int_editor():
+	# use internal editor
+	var path = $menu/Tree.get_selected().get_metadata(0)
+	$snippet_editor.snippet_path = path
+	$snippet_editor/vbox/code.text = loadfile(path)
+	$snippet_editor.popup_centered()
 
 func _on_Tree_item_rmb_selected(position):
 #		print("Right Mouse Button")

@@ -7,10 +7,7 @@ path="res://.import/icon_action_copy.svg-f2577ff5622549c45fcef75d6a05046c.stex"
 [deps]
 
 source_file="res://addons/snippets_plugin/icon_action_copy.svg"
-source_md5="c2d6f30bfbccc206ce57c5d4f754cab7"
-
 dest_files=[ "res://.import/icon_action_copy.svg-f2577ff5622549c45fcef75d6a05046c.stex" ]
-dest_md5="1f508c13ad8930bf832f83bdbdaddd2f"
 
 [params]
 

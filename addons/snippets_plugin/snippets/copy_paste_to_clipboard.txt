@@ -1,3 +1,4 @@
+# Copy & Paste to Clipboard
 func copy_to_clipboard():
 	# copy to clipboard
 	OS.set_clipboard(snippet) 
@@ -5,6 +6,3 @@ func copy_to_clipboard():
 func paste_from_clipboard():
 	# paste from clipboard
 	OS.get_clipboard()
-
-func bypass():
-	pass

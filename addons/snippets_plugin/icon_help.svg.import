@@ -7,10 +7,7 @@ path="res://.import/icon_help.svg-3f74637b4eb1cbe635d7d59c52f5da88.stex"
 [deps]
 
 source_file="res://addons/snippets_plugin/icon_help.svg"
-source_md5="7e7b6c27ffd42e7f5f146d739b05a1c2"
-
 dest_files=[ "res://.import/icon_help.svg-3f74637b4eb1cbe635d7d59c52f5da88.stex" ]
-dest_md5="ceb0adc4fd91d4e932bd26bb92aa13bb"
 
 [params]
 

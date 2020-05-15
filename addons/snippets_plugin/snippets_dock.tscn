@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://addons/snippets_plugin/snippets_dock.gd" type="Script" id=1]
 [ext_resource path="res://addons/snippets_plugin/icon_filesystem.svg" type="Texture" id=2]
@@ -8,11 +8,15 @@
 [ext_resource path="res://addons/snippets_plugin/icon_remove.svg" type="Texture" id=6]
 [ext_resource path="res://addons/snippets_plugin/icon_help.svg" type="Texture" id=7]
 [ext_resource path="res://addons/snippets_plugin/snippet_editor.tscn" type="PackedScene" id=8]
+[ext_resource path="res://addons/snippets_plugin/icon_search.svg" type="Texture" id=9]
 
 [node name="Snippets" type="Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="menu" type="VBoxContainer" parent="."]
 anchor_right = 1.0
@@ -63,8 +67,24 @@ margin_bottom = 22.0
 hint_tooltip = "Snippets Plugin Help"
 icon = ExtResource( 7 )
 
-[node name="Tree" type="Tree" parent="menu"]
+[node name="search-bar" type="HBoxContainer" parent="menu"]
 margin_top = 26.0
+margin_right = 1024.0
+margin_bottom = 52.0
+
+[node name="search" type="LineEdit" parent="menu/search-bar"]
+margin_right = 1024.0
+margin_bottom = 26.0
+size_flags_horizontal = 3
+align = 3
+context_menu_enabled = false
+shortcut_keys_enabled = false
+right_icon = ExtResource( 9 )
+placeholder_text = "search snippets"
+caret_blink = true
+
+[node name="Tree" type="Tree" parent="menu"]
+margin_top = 56.0
 margin_right = 1024.0
 margin_bottom = 582.0
 size_flags_vertical = 3
@@ -91,6 +111,7 @@ window_title = "Open a Directory"
 resizable = true
 mode = 2
 access = 2
+show_hidden_files = true
 current_dir = "/System/dev/godot/project/research/Godot3/Snippets-EditorPlugin"
 current_path = "/System/dev/godot/project/research/Godot3/Snippets-EditorPlugin/"
 
@@ -179,6 +200,7 @@ __meta__ = {
 [connection signal="pressed" from="menu/buttons/btnAddSnippet" to="." method="_on_btnAddSnippet_pressed"]
 [connection signal="pressed" from="menu/buttons/btnDelSnippet" to="." method="_on_btnDelSnippet_pressed"]
 [connection signal="pressed" from="menu/buttons/btnHelp" to="." method="_on_btnHelp_pressed"]
+[connection signal="text_changed" from="menu/search-bar/search" to="." method="_on_LineEdit_text_changed"]
 [connection signal="item_activated" from="menu/Tree" to="." method="_on_Tree_item_activated"]
 [connection signal="item_rmb_selected" from="menu/Tree" to="." method="_on_Tree_item_rmb_selected"]
 [connection signal="item_selected" from="menu/Tree" to="." method="_on_Tree_item_selected"]

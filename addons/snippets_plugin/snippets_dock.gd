@@ -48,17 +48,18 @@ func add_files_to_tree(files):
 	$menu/Tree.set_hide_root(true)
 
 	for file in files:
-		var file_node = $menu/Tree.create_item(root)
-		# Metadata is used in order to double click
-		# the item and copy the file to clipboard
-		file_node.set_metadata(0, snippets_path + "/" + file)
-		# Add Default Snippet description to metadat
-		file_node.set_metadata(1, "Snippet Description goes here...")
-		# The text/name that is displayed in the content tree
-		file_node.set_text(0, file)
+		if $"menu/search-bar/search".text.length() == 0 or file.findn($"menu/search-bar/search".text) != -1:
+			var file_node = $menu/Tree.create_item(root)
+			# Metadata is used in order to double click
+			# the item and copy the file to clipboard
+			file_node.set_metadata(0, snippets_path + "/" + file)
+			# Add Default Snippet description to metadat
+			file_node.set_metadata(1, "Snippet Description goes here...")
+			# The text/name that is displayed in the content tree
+			file_node.set_text(0, file)
 
-	# Hide the Description Column
-	$menu/Tree.set_column_expand(1,false)
+		# Hide the Description Column
+		$menu/Tree.set_column_expand(1,false)
 
 
 func list_files_in_directory(path):
@@ -242,3 +243,8 @@ func _on_btnHelp_pressed():
 	# show help windows dialog
 	$Help.rect_position=get_global_mouse_position()
 	$Help.popup()
+
+
+func _on_LineEdit_text_changed(text):
+	get_snippets()
+	

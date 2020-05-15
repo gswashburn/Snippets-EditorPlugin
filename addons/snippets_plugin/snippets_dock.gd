@@ -17,7 +17,7 @@ func get_snippets_path():
 	if err == OK:
 		snippets_path = config.get_value("snippets", "snippets_folder")
 	# Store a variable if and only if it hasn't been defined yet
-	if not config.has_section_key("location", "snippets_folder") or check_dir() == false: # Or Folder not found
+	if not config.has_section_key("location", "snippets_folder") or check_dir(snippets_path) == false: # Or Folder not found
 		config.set_value("snippets", "snippets_folder", ProjectSettings.globalize_path("res://addons/snippets_plugin/snippets"))
 		# Save the changes by overwriting the previous file
 		config.save("res://addons/snippets_plugin/snippets_plugin.cfg")
@@ -68,14 +68,14 @@ func list_files_in_directory(path):
 	dir.open(path)
 	dir.list_dir_begin()
 	while true:
-	    var file = dir.get_next()
-	    if file == "":
-	        break
-	    elif dir.current_is_dir():
-	        #print("folder found") # skip
-	        pass
-	    elif file.ends_with(".txt"):
-	        files.append(file)
+		var file = dir.get_next()
+		if file == "":
+			break
+		elif dir.current_is_dir():
+			#print("folder found") # skip
+			pass
+		elif file.ends_with(".txt"):
+			files.append(file)
 	dir.list_dir_end()
 	return files
 

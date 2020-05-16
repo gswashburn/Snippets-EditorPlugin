@@ -17,7 +17,7 @@ func get_snippets_path():
 	if err == OK:
 		snippets_path = config.get_value("snippets", "snippets_folder")
 	# Store a variable if and only if it hasn't been defined yet
-	if not config.has_section_key("location", "snippets_folder") or check_dir() == false: # Or Folder not found
+	if not config.has_section_key("location", "snippets_folder") or check_dir(snippets_path) == false: # Or Folder not found
 		config.set_value("snippets", "snippets_folder", ProjectSettings.globalize_path("res://addons/snippets_plugin/snippets"))
 		# Save the changes by overwriting the previous file
 		config.save("res://addons/snippets_plugin/snippets_plugin.cfg")
@@ -48,17 +48,18 @@ func add_files_to_tree(files):
 	$menu/Tree.set_hide_root(true)
 
 	for file in files:
-		var file_node = $menu/Tree.create_item(root)
-		# Metadata is used in order to double click
-		# the item and copy the file to clipboard
-		file_node.set_metadata(0, snippets_path + "/" + file)
-		# Add Default Snippet description to metadat
-		file_node.set_metadata(1, "Snippet Description goes here...")
-		# The text/name that is displayed in the content tree
-		file_node.set_text(0, file)
+		if $"menu/search-bar/search".text.length() == 0 or file.findn($"menu/search-bar/search".text) != -1:
+			var file_node = $menu/Tree.create_item(root)
+			# Metadata is used in order to double click
+			# the item and copy the file to clipboard
+			file_node.set_metadata(0, snippets_path + "/" + file)
+			# Add Default Snippet description to metadat
+			file_node.set_metadata(1, "Snippet Description goes here...")
+			# The text/name that is displayed in the content tree
+			file_node.set_text(0, file)
 
-	# Hide the Description Column
-	$menu/Tree.set_column_expand(1,false)
+		# Hide the Description Column
+		$menu/Tree.set_column_expand(1,false)
 
 
 func list_files_in_directory(path):
@@ -68,14 +69,14 @@ func list_files_in_directory(path):
 	dir.open(path)
 	dir.list_dir_begin()
 	while true:
-	    var file = dir.get_next()
-	    if file == "":
-	        break
-	    elif dir.current_is_dir():
-	        #print("folder found") # skip
-	        pass
-	    elif file.ends_with(".txt"):
-	        files.append(file)
+		var file = dir.get_next()
+		if file == "":
+			break
+		elif dir.current_is_dir():
+			#print("folder found") # skip
+			pass
+		elif file.ends_with(".txt"):
+			files.append(file)
 	dir.list_dir_end()
 	return files
 
@@ -242,3 +243,8 @@ func _on_btnHelp_pressed():
 	# show help windows dialog
 	$Help.rect_position=get_global_mouse_position()
 	$Help.popup()
+
+
+func _on_LineEdit_text_changed(text):
+	get_snippets()
+	

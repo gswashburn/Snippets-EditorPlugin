@@ -1,4 +1,4 @@
-Snippets Editor Plugin Script
+# Snippets Editor Plugin Script
 
 An editor plugin for Godot Engine 3.x to manage code snippets in your projects.
 
@@ -11,3 +11,7 @@ Adds Internal Editor to right mouse click on Code Snippet
 ## License
 
 All parts of this project that are not copyrighted or licensed by someone else are released under the MIT License - see the LICENSE.md file for details.
+
+## Fork Notes
+
+This is a fork of the original repository as noted above.

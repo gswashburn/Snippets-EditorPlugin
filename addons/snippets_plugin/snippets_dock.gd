@@ -1,10 +1,9 @@
 tool
 extends Control
 
-var snippets_path = ""
-var ext_editor_path = ""
-var config = ConfigFile.new()
-
+var snippets_path := ""
+var ext_editor_path := ""
+var config := ConfigFile.new()
 
 func _ready():
 	# Get Initial Snippets Path
@@ -16,23 +15,23 @@ func get_snippets_path():
 	var err = config.load("res://addons/snippets_plugin/snippets_plugin.cfg")
 	if err == OK:
 		snippets_path = config.get_value("snippets", "snippets_folder")
-	# Store a variable if and only if it hasn't been defined yet
-	if not config.has_section_key("location", "snippets_folder") or check_dir(snippets_path) == false: # Or Folder not found
+	# Store a variable if and only if it hasn't been defined yet,
+	# or if the folder hasn't been found.
+	if not config.has_section_key("snippets", "snippets_folder") or not check_dir(snippets_path):
 		config.set_value("snippets", "snippets_folder", ProjectSettings.globalize_path("res://addons/snippets_plugin/snippets"))
 		# Save the changes by overwriting the previous file
 		config.save("res://addons/snippets_plugin/snippets_plugin.cfg")
 
-func check_dir(path):
+func check_dir(path) -> bool:
 	# Check if folder exists
-	var dir = Directory.new()
-	if dir.dir_exists(path):
-		return(true)
-	else:
-		return(false)
+	var dir := Directory.new()
+	if dir.dir_exists(path): return true
+	
+	return false
 
 func update_snippets_path():
 	# Update snippets config file with current snippets path
-	var err = config.load("res://addons/snippets_plugin/snippets_plugin.cfg")
+	var err := config.load("res://addons/snippets_plugin/snippets_plugin.cfg")
 	if err == OK:
 		config.set_value("snippets", "snippets_folder", snippets_path)
 		config.save("res://addons/snippets_plugin/snippets_plugin.cfg")
@@ -61,7 +60,6 @@ func add_files_to_tree(files):
 		# Hide the Description Column
 		$menu/Tree.set_column_expand(1,false)
 
-
 func list_files_in_directory(path):
 	# List files in a folder
 	var files = []
@@ -84,7 +82,6 @@ func deletefile(path):
 	# Delete file in a folder
 	var dir = Directory.new()
 	dir.remove(path)
-
 
 func savefile(content, path):
 	# save text content to file
@@ -224,13 +221,11 @@ func _on_msgTimer_timeout():
 	# when timer times out (5secs) clear text from statusbar
 	$menu/Statusbar.text = ""
 
-
 func _on_FileDialog_file_selected(path):
 #	print(OS.get_clipboard() + "\n" + $FileDialog.current_path)
 	savefile(OS.get_clipboard(),path) # Paste from clipboard to file
 	update_statusbar("Snippet Added...")
 	get_snippets()
-
 
 func _on_FileDialog_dir_selected(dir):
 	# if dir selected then update the snippets folder in config file
@@ -244,7 +239,5 @@ func _on_btnHelp_pressed():
 	$Help.rect_position=get_global_mouse_position()
 	$Help.popup()
 
-
 func _on_LineEdit_text_changed(text):
 	get_snippets()
-	

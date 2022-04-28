@@ -116,7 +116,8 @@ func _on_Tree_item_activated():
 
 func get_snippets():
 	# Load files to nodes in tree
-	var snipfiles = list_files_in_directory(snippets_path)
+	var snipfiles : Array = list_files_in_directory(snippets_path)
+	snipfiles.sort()
 	add_files_to_tree(snipfiles)
 	update_statusbar("Files Refreshed...")
 

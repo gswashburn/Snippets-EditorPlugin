@@ -11,7 +11,3 @@ Adds Internal Editor to right mouse click on Code Snippet
 ## License
 
 All parts of this project that are not copyrighted or licensed by someone else are released under the MIT License - see the LICENSE.md file for details.
-
-## Fork Notes
-
-This is a fork of the original repository as noted above.

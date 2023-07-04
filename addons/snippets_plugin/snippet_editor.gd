@@ -1,92 +1,69 @@
 tool
 extends WindowDialog
 
-var snippet_path = ""
-var code = ""
+var snippet_path := ""
+#var code := ""
 
-#flags
-var save_prompt
-var txtChg
+# Flags
+var save_prompt: bool
+var txtChg: int
 
 # Make simpler
-onready var menu = $vbox/code.get_menu()
-onready var editor = $vbox/code
+onready var menu: PopupMenu = $vbox/code.get_menu()
+onready var editor: TextEdit = $vbox/code
+
+## Context menu IDs.
+enum ContextMenuID {LINE_NUMBERS, LINE_HIGHLIGHT, SYNTAX_HIGHLIGHT}
 
 func _ready():
 	# Set flags
 	save_prompt = false
 	txtChg = 0
-	# setup menu
+	
 	setup_menu()
-# Setup Editor
+	
+	# Setup Editor
 	$vbox/menu/btnSave.disabled = true
 	$vbox/menu/btnNumbers.pressed = true
 	$vbox/menu/btnHighlight.pressed = true
 	$vbox/menu/btnSyntax.pressed = true
 
-
-
+## Populate the popup menu of the text box.
 func setup_menu():
-	# Setup Context Menu
-	editor.set_context_menu_enabled( true)
+	editor.set_context_menu_enabled(true)
+	
 	menu.add_separator()
-	menu.add_item("Line Numbers",-1,0)
-	menu.add_item("Line Highlight",-1,0)
-	menu.add_item("Syntax Highlight",-1,0)
-#	menu.add_separator()
+	menu.add_item("Line Numbers", ContextMenuID.LINE_NUMBERS)
+	menu.add_item("Line Highlight", ContextMenuID.LINE_HIGHLIGHT)
+	menu.add_item("Syntax Highlight", ContextMenuID.SYNTAX_HIGHLIGHT)
 
 	# Setup Signal for added entries
-	menu.connect( "id_pressed", self, "_on_menu_item_pressed")
-#	set_visible(true)
+	menu.connect("id_pressed", self, "_on_menu_item_pressed")
 
-func _on_menu_item_pressed(ID):
-	# Check for added context menu items
-#	print(menu.get_item_text(ID))
-	if menu.get_item_text(ID) == "Line Numbers":
-		# Line Number Toggle Method
-		if editor.show_line_numbers: # Line numbers On
-			editor.show_line_numbers = false # Line Numbers Off
-		else:
-			editor.show_line_numbers = true # Line Numbers On
-
-	if menu.get_item_text(ID) == "Line Highlight":
-		# Line Hightlight Toggle Method
-		if editor.highlight_current_line:
-			editor.highlight_current_line = false # Line Highlighting Off
-		else:
-			editor.highlight_current_line = true # Line Highlighting On
-
-	if menu.get_item_text(ID) == "Syntax Highlight":
-		# Line Hightlight Toggle Method
-		if editor.syntax_highlighting:
-			editor.syntax_highlighting = false # Line Highlighting Off
-		else:
-			editor.syntax_highlighting = true # Line Highlighting On
-
-
-func savefile(content, path):
-# Save Text Content to file
+## Save a string to a file pointed to by 'path'.
+func savefile(content: String, path: String):
 	var file = File.new()
 	file.open(path, file.WRITE)
 	file.store_string(content)
 	file.close()
 
-
-func loadfile(path):
-# Load Text Content from File
-	var file = File.new()
+## Load a file and return its contents as a string.
+func loadfile(path: String) -> String:
+	var file := File.new()
 	file.open(path, file.READ)
-	var content = file.get_as_text()
+	
+	var content := file.get_as_text()
 	file.close()
 	return content
 
+## Close the current snippet.
 func quit():
-#	print("Save File: " + str(save_prompt))
 	txtChg = 0
 
 	if save_prompt == true:
-		save_prompt = false # reset save flag to false
+		save_prompt = false
 		$vbox/menu/btnSave.disabled = true
+		
 		# Save or Save As File
 		$FileDialog.current_path = snippet_path
 		$FileDialog.set_mode(FileDialog.MODE_SAVE_FILE)
@@ -94,56 +71,60 @@ func quit():
 		$FileDialog.visible = true
 		$FileDialog.popup_centered()
 
+func _on_menu_item_pressed(ID: int) -> void:
+	# Check for added context menu items
+	match ID:
+		ContextMenuID.LINE_NUMBERS:
+			# Line number toggle method
+			# TODO: check this to make sure it works
+			editor.show_line_numbers = not editor.show_line_numbers
+		ContextMenuID.LINE_HIGHLIGHT:
+			# Line highlight toggle method
+			# TODO: check this to make sure it works
+			editor.highlight_current_line = not editor.highlight_current_line
+		ContextMenuID.SYNTAX_HIGHLIGHT:
+			# Syntax highlight toggle method
+			# TODO: check this to make sure it works
+			editor.syntax_highlighting = not editor.syntax_highlighting
 
-
-func _on_FileDialog_file_selected(path):
+func _on_FileDialog_file_selected(path: String) -> void:
+	# Confirm save file
 	if $FileDialog.MODE_SAVE_FILE:
-#		print(ProjectSettings.globalize_path($FileDialog.current_path))
-#		print($FileDialog.current_file)
-		if not $FileDialog.current_file == "":
+		if $FileDialog.current_file != "":
 			savefile(editor.text, ProjectSettings.globalize_path($FileDialog.current_path))
 
-func _on_snippet_editor_hide():
+func _on_snippet_editor_hide() -> void:
+	# Close the snippet
 	quit()
 
-func _on_code_text_changed():
-	txtChg += 1 # Increment when text changes
-#	print(txtChg)
+func _on_code_text_changed() -> void:
+	# Highlight the save button if text has changed enough
+	txtChg += 1
 	if txtChg > 2: # 2 is the default # of times txt changed when loading file
-		# Hightlight Save Button
+		# Hightlight save button
 		$vbox/menu/btnSave.disabled = false
 		save_prompt = true
 
-
-func _on_btnSave_pressed():
-	save_prompt = false # reset save flag to false
+func _on_btnSave_pressed() -> void:
+	# Save file
+	save_prompt = false
 	$vbox/menu/btnSave.disabled = true
-	# Save or Save As File
+	
+	# Save or save as file
 	$FileDialog.current_path = snippet_path
 	$FileDialog.set_mode(FileDialog.MODE_SAVE_FILE)
 	$FileDialog.resizable = true
 	$FileDialog.visible = true
 	$FileDialog.popup_centered()
 
-func _on_btnSyntax_toggled(button_pressed):
-	# Line Hightlight Toggle Method
-	if editor.syntax_highlighting:
-		editor.syntax_highlighting = false # Line Highlighting Off
-	else:
-		editor.syntax_highlighting = true # Line Highlighting On
+func _on_btnSyntax_toggled(_button_pressed) -> void:
+	# Line hightlight toggle method
+	editor.syntax_highlighting = not editor.syntax_highlighting
 
+func _on_btnHighlight_toggled(_button_pressed) -> void:
+	# Line hightlight toggle method
+	editor.highlight_current_line = not editor.highlight_current_line
 
-func _on_btnHighlight_toggled(button_pressed):
-	# Line Hightlight Toggle Method
-	if editor.highlight_current_line:
-		editor.highlight_current_line = false # Line Highlighting Off
-	else:
-		editor.highlight_current_line = true # Line Highlighting On
-
-
-func _on_btnNumbers_toggled(button_pressed):
-	# Line Number Toggle Method
-	if editor.show_line_numbers: # Line numbers On
-		editor.show_line_numbers = false # Line Numbers Off
-	else:
-		editor.show_line_numbers = true # Line Numbers On
+func _on_btnNumbers_toggled(_button_pressed) -> void:
+	# Line number toggle method
+	editor.show_line_numbers = not editor.show_line_numbers

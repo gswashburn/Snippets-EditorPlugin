@@ -5,30 +5,37 @@ var snippets_path := ""
 var ext_editor_path := ""
 var config := ConfigFile.new()
 
-func _ready():
+func _ready() -> void:
 	# Get Initial Snippets Path
 	get_snippets_path()
+	
 	# Get Snippets List
 	get_snippets()
 
-func get_snippets_path():
-	var err = config.load("res://addons/snippets_plugin/snippets_plugin.cfg")
+## Set the snippets path.
+func get_snippets_path() -> void:
+	var err := config.load("res://addons/snippets_plugin/snippets_plugin.cfg")
 	if err == OK:
 		snippets_path = config.get_value("snippets", "snippets_folder")
+	
 	# Store a variable if and only if it hasn't been defined yet,
 	# or if the folder hasn't been found.
 	if not config.has_section_key("snippets", "snippets_folder") or not check_dir(snippets_path):
-		config.set_value("snippets", "snippets_folder", ProjectSettings.globalize_path("res://addons/snippets_plugin/snippets"))
+		config.set_value("snippets", "snippets_folder",
+			ProjectSettings.globalize_path("res://addons/snippets_plugin/snippets"))
+		
 		# Save the changes by overwriting the previous file
 		config.save("res://addons/snippets_plugin/snippets_plugin.cfg")
 
-func check_dir(path) -> bool:
+## Return true if the directory exists.
+func check_dir(path: String) -> bool:
 	# Check if folder exists
 	var dir := Directory.new()
 	if dir.dir_exists(path): return true
 	
 	return false
 
+## Update the snippets path.
 func update_snippets_path():
 	# Update snippets config file with current snippets path
 	var err := config.load("res://addons/snippets_plugin/snippets_plugin.cfg")
@@ -36,90 +43,141 @@ func update_snippets_path():
 		config.set_value("snippets", "snippets_folder", snippets_path)
 		config.save("res://addons/snippets_plugin/snippets_plugin.cfg")
 
-func add_files_to_tree(files):
+## Add the filenames to the tree.
+func add_files_to_tree(files: Array) -> void:
+	var tree := $menu/Tree
+	
 	# Clear any existing content (to allow us to repopulate without having to do extra work)
-	$menu/Tree.clear()
+	tree.clear()
+	
 	# Create the first (root) item
-	var root = $menu/Tree.create_item()
+	var root = tree.create_item()
+	
 	# Enable the "Expand" flag of Control.
-	$menu/Tree.set_column_expand(0, true)
+	tree.set_column_expand(0, true)
+	
 	# Hide the root (only display children)
-	$menu/Tree.set_hide_root(true)
-
-	for file in files:
-		if $"menu/search-bar/search".text.length() == 0 or file.findn($"menu/search-bar/search".text) != -1:
-			var file_node = $menu/Tree.create_item(root)
+	tree.set_hide_root(true)
+	
+	var searchbar = $"menu/search-bar/search"
+	for _file in files:
+		var file: String = _file
+		
+		if searchbar.text.length() == 0 or file.findn(searchbar.text) != -1:
+			var file_node: TreeItem = tree.create_item(root)
+			
 			# Metadata is used in order to double click
 			# the item and copy the file to clipboard
 			file_node.set_metadata(0, snippets_path + "/" + file)
-			# Add Default Snippet description to metadat
+			
+			# Add Default Snippet description to metadata
 			file_node.set_metadata(1, "Snippet Description goes here...")
+			
 			# The text/name that is displayed in the content tree
 			file_node.set_text(0, file)
-
+	
 		# Hide the Description Column
-		$menu/Tree.set_column_expand(1,false)
+		tree.set_column_expand(1, false)
 
-func list_files_in_directory(path):
+## Return a list of files under the specified PATH.
+func list_files_in_directory(path: String) -> Array:
 	# List files in a folder
-	var files = []
-	var dir = Directory.new()
+	var files := []
+	
+	# Open the directory path and start listing files
+	var dir := Directory.new()
 	dir.open(path)
 	dir.list_dir_begin()
+	
 	while true:
-		var file = dir.get_next()
-		if file == "":
-			break
-		elif dir.current_is_dir():
-			#print("folder found") # skip
-			pass
-		elif file.ends_with(".txt"):
+		var file := dir.get_next()
+		if file == "": break
+		
+		# Add text file to the list
+		if not dir.current_is_dir() and file.ends_with(".txt"):
 			files.append(file)
+	
 	dir.list_dir_end()
+	
 	return files
 
-func deletefile(path):
-	# Delete file in a folder
+## Delete the file named in 'path'.
+func deletefile(path: String) -> void:
 	var dir = Directory.new()
 	dir.remove(path)
 
-func savefile(content, path):
-	# save text content to file
-	var file = File.new()
-	file.open(str(path), file.WRITE)
+## Save the contents of a string to the file denoted in 'path'.
+func savefile(content: String, path: String) -> void:
+	var file := File.new()
+	file.open(path, file.WRITE)
 	file.store_string(content)
 	file.close()
 
-func loadfile(path):
-	# load text content from file
-	var file = File.new()
-	file.open(str(path), file.READ)
-	var content = file.get_as_text()
+## Load the contents of 'path' and return it as a string.
+func loadfile(path: String) -> String:
+	var file := File.new()
+	file.open(path, file.READ)
+	var content := file.get_as_text()
 	file.close()
 	return content
 
-func copy_to_clipboard():
-	# copy the resource (script) to clipboard
-	var file = $menu/Tree.get_selected().get_metadata(0)
-	var snippet = loadfile(file)
-	OS.set_clipboard(snippet) # Copy to clipboard
+## Copy the contents of the file displayed on the current tree item to clipboard.
+func copy_to_clipboard() -> void:
+	var file: String = $menu/Tree.get_selected().get_metadata(0)
+	OS.set_clipboard(loadfile(file))
 
-func paste_from_clipboard():
-	# paste resource (script) from clipboard
-	OS.get_clipboard() # Paste from clipboard
+#func paste_from_clipboard() -> void:
+#	OS.get_clipboard()
 
-func _on_Tree_item_activated():
+## Update the tree with the current list of snippets.
+func get_snippets() -> void:
+	var snipfiles := list_files_in_directory(snippets_path)
+	snipfiles.sort()
+	
+	add_files_to_tree(snipfiles)
+	update_statusbar("Files Refreshed...")
+
+## Display a message on the statusbar.
+func update_statusbar(msg: String) -> void:
+	$msgTimer.set_wait_time(5)
+	$msgTimer.start()
+	$menu/Statusbar.text = msg
+
+## Open the selected snippet in an external editor.
+func ext_editor() -> void:
+	# use external editor
+	update_statusbar("Opened in External Editor...")
+	
+	# get file path from tree node metadata
+	var path: String = $menu/Tree.get_selected().get_metadata(0)
+	var args := PoolStringArray()
+	args.append(path)
+	
+	# Run command
+	OS.execute(ext_editor_path, args, false)
+
+## Open the selected snippet using the shell editor.
+func shell_editor() -> void:
+	# use shell editor for txt files
+	var path: String = $menu/Tree.get_selected().get_metadata(0)
+	
+	update_statusbar("Handled by txt extension...")
+	
+	# Open the correct program
+	OS.shell_open(path)
+
+## Open the selected snippet using the internal editor.
+func int_editor() -> void:
+	var path: String = $menu/Tree.get_selected().get_metadata(0)
+	$snippet_editor.snippet_path = path
+	$snippet_editor/vbox/code.text = loadfile(path)
+	$snippet_editor.popup_centered()
+
+func _on_Tree_item_activated() -> void:
 	# Edit the text file in default external editor
 	$menu/Tree/SnipMenu.rect_position = get_global_mouse_position()
 	$menu/Tree/SnipMenu.visible = true
 	$menu/Tree/SnipMenu.popup()
-
-func get_snippets():
-	# Load files to nodes in tree
-	var snipfiles : Array = list_files_in_directory(snippets_path)
-	snipfiles.sort()
-	add_files_to_tree(snipfiles)
-	update_statusbar("Files Refreshed...")
 
 func _on_btnRefresh_pressed():
 	# When refresh button pressed get snippets
@@ -141,12 +199,6 @@ func _on_btnClipboard_pressed():
 		update_statusbar("Copied to Clipboard...")
 	else:
 		update_statusbar("Nothing Selected...")
-
-func update_statusbar(info):
-	$msgTimer.set_wait_time(5)
-	$msgTimer.start()
-	$menu/Statusbar.text = ""
-	$menu/Statusbar.text = info
 
 func _on_btnFolder_mouse_entered():
 	$menu/buttons/btnFolder.hint_tooltip = snippets_path
@@ -170,28 +222,6 @@ func _on_SnipMenu_id_pressed(ID):
 	#		print($menu/Tree.get_selected().get_metadata(0).get_base_dir())
 			update_statusbar("Opened in File Manager...")
 			OS.shell_open($menu/Tree.get_selected().get_metadata(0).get_base_dir())
-
-func ext_editor():
-	# use external editor
-	update_statusbar("Opened in External Editor...")
-	# get file path from tree node metadata
-	var path = $menu/Tree.get_selected().get_metadata(0)
-	var args = PoolStringArray()
-	args.append(path)
-	OS.execute(ext_editor_path, args, false)
-
-func shell_editor():
-	# use shell editor for txt files
-	var path = $menu/Tree.get_selected().get_metadata(0)
-	update_statusbar("Handled by txt extension...")
-	OS.shell_open(path)
-
-func int_editor():
-	# use internal editor
-	var path = $menu/Tree.get_selected().get_metadata(0)
-	$snippet_editor.snippet_path = path
-	$snippet_editor/vbox/code.text = loadfile(path)
-	$snippet_editor.popup_centered()
 
 func _on_Tree_item_rmb_selected(position):
 #		print("Right Mouse Button")

@@ -112,8 +112,6 @@ resizable = true
 mode = 2
 access = 2
 show_hidden_files = true
-current_dir = "/System/dev/godot/project/research/Godot3/Snippets-EditorPlugin"
-current_path = "/System/dev/godot/project/research/Godot3/Snippets-EditorPlugin/"
 
 [node name="msgTimer" type="Timer" parent="."]
 wait_time = 5.0
@@ -193,6 +191,7 @@ __meta__ = {
 }
 
 [node name="snippet_editor" parent="." instance=ExtResource( 8 )]
+
 [connection signal="mouse_entered" from="menu/buttons/btnFolder" to="." method="_on_btnFolder_mouse_entered"]
 [connection signal="pressed" from="menu/buttons/btnFolder" to="." method="_on_btnFolder_pressed"]
 [connection signal="pressed" from="menu/buttons/btnRefresh" to="." method="_on_btnRefresh_pressed"]

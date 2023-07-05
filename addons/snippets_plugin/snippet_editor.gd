@@ -2,11 +2,9 @@ tool
 extends WindowDialog
 
 var snippet_path := ""
-#var code := ""
 
 # Flags
 var save_prompt: bool
-var txtChg: int
 
 # Make simpler
 onready var menu: PopupMenu = $vbox/code.get_menu()
@@ -18,7 +16,6 @@ enum ContextMenuID {LINE_NUMBERS, LINE_HIGHLIGHT, SYNTAX_HIGHLIGHT}
 func _ready():
 	# Set flags
 	save_prompt = false
-	txtChg = 0
 	
 	setup_menu()
 	
@@ -59,24 +56,20 @@ func loadfile(path: String) -> String:
 
 ## Close the current snippet.
 func quit():
-	txtChg = 0
-
 	if save_prompt == true:
 		save_prompt = false
 		$vbox/menu/btnSave.disabled = true
-		
-		# Save or Save As File
-		$FileDialog.current_path = snippet_path
-		$FileDialog.set_mode(FileDialog.MODE_SAVE_FILE)
-		$FileDialog.resizable = true
-		$FileDialog.visible = true
-		$FileDialog.popup_centered()
+		_show_save_dialog()
+
+func _show_save_dialog() -> void:
+	# Save or Save As File
+	$FileDialog.current_path = snippet_path
+	$FileDialog.set_mode(FileDialog.MODE_SAVE_FILE)
+	$FileDialog.resizable = true
+	$FileDialog.visible = true
+	$FileDialog.popup_centered_ratio(0.5)
 
 func _on_menu_item_pressed(ID: int) -> void:
-#	menu.add_item("Line Numbers", ContextMenuID.LINE_NUMBERS)
-#	menu.add_item("Line Highlight", ContextMenuID.LINE_HIGHLIGHT)
-#	menu.add_item("Syntax Highlight", ContextMenuID.SYNTAX_HIGHLIGHT)
-	
 	var label: String = menu.get_item_text(ID)
 	
 	# Check for added context menu items
@@ -102,24 +95,16 @@ func _on_snippet_editor_hide() -> void:
 	quit()
 
 func _on_code_text_changed() -> void:
-	# Highlight the save button if text has changed enough
-	txtChg += 1
-	if txtChg > 2: # 2 is the default # of times txt changed when loading file
-		# Hightlight save button
-		$vbox/menu/btnSave.disabled = false
-		save_prompt = true
+	# Highlight the save button
+	$vbox/menu/btnSave.disabled = false
+	save_prompt = true
 
 func _on_btnSave_pressed() -> void:
 	# Save file
 	save_prompt = false
 	$vbox/menu/btnSave.disabled = true
 	
-	# Save or save as file
-	$FileDialog.current_path = snippet_path
-	$FileDialog.set_mode(FileDialog.MODE_SAVE_FILE)
-	$FileDialog.resizable = true
-	$FileDialog.visible = true
-	$FileDialog.popup_centered()
+	_show_save_dialog()
 
 func _on_btnSyntax_toggled(button_pressed: bool) -> void:
 	# Line hightlight toggle method

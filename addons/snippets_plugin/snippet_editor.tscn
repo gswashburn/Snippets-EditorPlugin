@@ -7,7 +7,6 @@
 [ext_resource path="res://addons/snippets_plugin/icon_syntax.svg" type="Texture" id=5]
 
 [node name="snippet_editor" type="WindowDialog"]
-visible = true
 margin_left = 317.0
 margin_top = 85.0
 margin_right = 862.0

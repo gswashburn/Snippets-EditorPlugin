@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://addons/snippets_plugin/snippets_dock.gd" type="Script" id=1]
 [ext_resource path="res://addons/snippets_plugin/icon_filesystem.svg" type="Texture" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://addons/snippets_plugin/icon_help.svg" type="Texture" id=7]
 [ext_resource path="res://addons/snippets_plugin/snippet_editor.tscn" type="PackedScene" id=8]
 [ext_resource path="res://addons/snippets_plugin/icon_search.svg" type="Texture" id=9]
+[ext_resource path="res://addons/snippets_plugin/params/snippet_params.tscn" type="PackedScene" id=10]
 
 [node name="Snippets" type="Panel"]
 anchor_right = 1.0
@@ -190,6 +191,9 @@ __meta__ = {
 }
 
 [node name="snippet_editor" parent="." instance=ExtResource( 8 )]
+visible = false
+
+[node name="SnippetParams" parent="." instance=ExtResource( 10 )]
 
 [connection signal="mouse_entered" from="menu/buttons/btnFolder" to="." method="_on_btnFolder_mouse_entered"]
 [connection signal="pressed" from="menu/buttons/btnFolder" to="." method="_on_btnFolder_pressed"]
@@ -206,3 +210,5 @@ __meta__ = {
 [connection signal="dir_selected" from="FileDialog" to="." method="_on_FileDialog_dir_selected"]
 [connection signal="file_selected" from="FileDialog" to="." method="_on_FileDialog_file_selected"]
 [connection signal="timeout" from="msgTimer" to="." method="_on_msgTimer_timeout"]
+[connection signal="cancelled" from="SnippetParams" to="." method="_on_SnippetParams_cancelled"]
+[connection signal="params_confirmed" from="SnippetParams" to="." method="_on_SnippetParams_params_confirmed"]

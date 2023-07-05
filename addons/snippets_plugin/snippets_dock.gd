@@ -198,8 +198,20 @@ func _on_btnFolder_pressed() -> void:
 func _on_btnClipboard_pressed() -> void:
 	# Copy contents of selected snippet into clipboard
 	if $menu/Tree.get_selected():
-		copy_to_clipboard()
-		update_statusbar("Copied to Clipboard...")
+		var file: String = $menu/Tree.get_selected().get_metadata(0)
+		var snippet := loadfile(file)
+		var intp := preload("res://addons/snippets_plugin/interpolator.gd").new(snippet)
+		
+		# If there are no fields, skip to copying the snippet to the clipboard
+		var fields := intp.parse_fields()
+		if not fields:
+			_on_SnippetParams_cancelled()
+			return
+		
+		# Open the snippets parameters window
+		$SnippetParams.activate(fields)
+		
+		set_meta("interpolator", intp)
 	else:
 		update_statusbar("Nothing Selected...")
 
@@ -278,3 +290,20 @@ func _on_btnHelp_pressed() -> void:
 
 func _on_LineEdit_text_changed(text: String) -> void:
 	get_snippets()
+
+func _on_SnippetParams_params_confirmed(params: Array) -> void:
+	# Confirmed snippet parameters
+	var dparams := {}
+	for param in params:
+		dparams[param.name] = param.value
+	
+	var intp = get_meta("interpolator")
+	if intp:
+		var snippet: String = intp.interpolate(dparams)
+		OS.set_clipboard(snippet)
+		update_statusbar("Copied to Clipboard...")
+
+func _on_SnippetParams_cancelled() -> void:
+	# When no parameters are provided.
+	copy_to_clipboard()
+	update_statusbar("Copied to Clipboard...")

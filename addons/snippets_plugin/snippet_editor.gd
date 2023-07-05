@@ -24,9 +24,10 @@ func _ready():
 	
 	# Setup Editor
 	$vbox/menu/btnSave.disabled = true
-	$vbox/menu/btnNumbers.pressed = true
-	$vbox/menu/btnHighlight.pressed = true
-	$vbox/menu/btnSyntax.pressed = true
+	
+	$vbox/menu/btnNumbers.pressed = false
+	$vbox/menu/btnHighlight.pressed = false
+	$vbox/menu/btnSyntax.pressed = false
 
 ## Populate the popup menu of the text box.
 func setup_menu():
@@ -72,20 +73,23 @@ func quit():
 		$FileDialog.popup_centered()
 
 func _on_menu_item_pressed(ID: int) -> void:
+#	menu.add_item("Line Numbers", ContextMenuID.LINE_NUMBERS)
+#	menu.add_item("Line Highlight", ContextMenuID.LINE_HIGHLIGHT)
+#	menu.add_item("Syntax Highlight", ContextMenuID.SYNTAX_HIGHLIGHT)
+	
+	var label: String = menu.get_item_text(ID)
+	
 	# Check for added context menu items
-	match ID:
-		ContextMenuID.LINE_NUMBERS:
+	match label:
+		"Line Numbers":
 			# Line number toggle method
-			# TODO: check this to make sure it works
-			editor.show_line_numbers = not editor.show_line_numbers
-		ContextMenuID.LINE_HIGHLIGHT:
+			editor.show_line_numbers = $vbox/menu/btnNumbers.pressed
+		"Line Highlight":
 			# Line highlight toggle method
-			# TODO: check this to make sure it works
-			editor.highlight_current_line = not editor.highlight_current_line
-		ContextMenuID.SYNTAX_HIGHLIGHT:
+			editor.highlight_current_line = $vbox/menu/btnHighlight.pressed
+		"Syntax Highlight":
 			# Syntax highlight toggle method
-			# TODO: check this to make sure it works
-			editor.syntax_highlighting = not editor.syntax_highlighting
+			editor.syntax_highlighting = $vbox/menu/btnSyntax.pressed
 
 func _on_FileDialog_file_selected(path: String) -> void:
 	# Confirm save file
@@ -117,14 +121,14 @@ func _on_btnSave_pressed() -> void:
 	$FileDialog.visible = true
 	$FileDialog.popup_centered()
 
-func _on_btnSyntax_toggled(_button_pressed) -> void:
+func _on_btnSyntax_toggled(button_pressed: bool) -> void:
 	# Line hightlight toggle method
-	editor.syntax_highlighting = not editor.syntax_highlighting
+	editor.syntax_highlighting = button_pressed
 
-func _on_btnHighlight_toggled(_button_pressed) -> void:
+func _on_btnHighlight_toggled(button_pressed: bool) -> void:
 	# Line hightlight toggle method
-	editor.highlight_current_line = not editor.highlight_current_line
+	editor.highlight_current_line = button_pressed
 
-func _on_btnNumbers_toggled(_button_pressed) -> void:
+func _on_btnNumbers_toggled(button_pressed: bool) -> void:
 	# Line number toggle method
-	editor.show_line_numbers = not editor.show_line_numbers
+	editor.show_line_numbers = button_pressed

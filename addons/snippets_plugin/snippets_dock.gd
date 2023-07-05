@@ -179,60 +179,63 @@ func _on_Tree_item_activated() -> void:
 	$menu/Tree/SnipMenu.visible = true
 	$menu/Tree/SnipMenu.popup()
 
-func _on_btnRefresh_pressed():
+func _on_btnRefresh_pressed() -> void:
 	# When refresh button pressed get snippets
 	get_snippets()
 
-func _on_btnFolder_pressed():
+func _on_btnFolder_pressed() -> void:
 	# Open filedialog to select folder for snippets
 	update_statusbar("Select Snippets Folder...")
+	
 	$FileDialog.set_mode( FileDialog.MODE_OPEN_DIR)
 	$FileDialog.current_dir = snippets_path
 	$FileDialog.update()
+	
 	# Position file dialog at mouse
 	$FileDialog.rect_position = get_global_mouse_position()
 	$FileDialog.popup()
 
-func _on_btnClipboard_pressed():
+func _on_btnClipboard_pressed() -> void:
+	# Copy contents of selected snippet into clipboard
 	if $menu/Tree.get_selected():
 		copy_to_clipboard()
 		update_statusbar("Copied to Clipboard...")
 	else:
 		update_statusbar("Nothing Selected...")
 
-func _on_btnFolder_mouse_entered():
+func _on_btnFolder_mouse_entered() -> void:
+	# Display snippet filename in tooltip
 	$menu/buttons/btnFolder.hint_tooltip = snippets_path
 
-func _on_Tree_item_selected():
+func _on_Tree_item_selected() -> void:
 	update_statusbar("Snippet Selected...")
-	pass
 
-func _on_SnipMenu_id_pressed(ID):
+func _on_SnipMenu_id_pressed(ID: int) -> void:
 	match ID:
-		0: # Edit file in internal editor
+		0:
+			# Edit file in internal editor
 			int_editor()
-		1: # Edit file in external editor if defined
+		1:
+			# Edit file in external editor if defined
 			if not ext_editor_path == "":
 				ext_editor()
 			else:
 				# Popup error msg if ext editor not defined
 				update_statusbar("External Editor not configured...")
-		2: # Show file in file manager
+		2:
+			# Show file in file manager
 			print("Show in File Manager")
-	#		print($menu/Tree.get_selected().get_metadata(0).get_base_dir())
 			update_statusbar("Opened in File Manager...")
 			OS.shell_open($menu/Tree.get_selected().get_metadata(0).get_base_dir())
 
-func _on_Tree_item_rmb_selected(position):
-#		print("Right Mouse Button")
-		$menu/Tree/SnipMenu.rect_position = get_global_mouse_position()
-		$menu/Tree/SnipMenu.visible = true
-		$menu/Tree/SnipMenu.popup()
+func _on_Tree_item_rmb_selected(_position) -> void:
+	# Display context menu
+	$menu/Tree/SnipMenu.rect_position = get_global_mouse_position()
+	$menu/Tree/SnipMenu.visible = true
+	$menu/Tree/SnipMenu.popup()
 
-func _on_btnAddSnippet_pressed():
-	# Add Clipboard to New Snippet
-#	print("Copy Clipboard to Snippet")
-	# paste resource (script) from clipboard
+func _on_btnAddSnippet_pressed() -> void:
+	# Paste clipboard into new snippet
 	$FileDialog.set_mode(FileDialog.MODE_SAVE_FILE)
 	$FileDialog.current_dir = snippets_path
 	$FileDialog.add_filter("*.txt")
@@ -241,34 +244,37 @@ func _on_btnAddSnippet_pressed():
 	$FileDialog.rect_position = get_global_mouse_position()
 	$FileDialog.popup()
 
-func _on_btnDelSnippet_pressed():
+func _on_btnDelSnippet_pressed() -> void:
+	# Delete the selected snippet
+	# TODO: Add confirmation dialog
 	if $menu/Tree.get_selected():
+		# TODO: make function that gets the metadata for column 0
 		deletefile($menu/Tree.get_selected().get_metadata(0))
 		get_snippets()
 	else:
 		update_statusbar("Nothing Selected...")
 
-func _on_msgTimer_timeout():
-	# when timer times out (5secs) clear text from statusbar
+func _on_msgTimer_timeout() -> void:
+	# When timer times out (5secs) clear text from statusbar
 	$menu/Statusbar.text = ""
 
-func _on_FileDialog_file_selected(path):
-#	print(OS.get_clipboard() + "\n" + $FileDialog.current_path)
-	savefile(OS.get_clipboard(),path) # Paste from clipboard to file
+func _on_FileDialog_file_selected(path: String) -> void:
+	# Save the contents of the clipboard to file
+	savefile(OS.get_clipboard(), path)
 	update_statusbar("Snippet Added...")
 	get_snippets()
 
-func _on_FileDialog_dir_selected(dir):
-	# if dir selected then update the snippets folder in config file
+func _on_FileDialog_dir_selected(dir: String) -> void:
+	# If dir selected then update the snippets folder in config file
 	snippets_path = dir
 	update_snippets_path()
 	update_statusbar("Folder Selected...")
 	get_snippets()
 
-func _on_btnHelp_pressed():
-	# show help windows dialog
-	$Help.rect_position=get_global_mouse_position()
+func _on_btnHelp_pressed() -> void:
+	# Show help windows dialog
+	$Help.rect_position = get_global_mouse_position()
 	$Help.popup()
 
-func _on_LineEdit_text_changed(text):
+func _on_LineEdit_text_changed(text: String) -> void:
 	get_snippets()

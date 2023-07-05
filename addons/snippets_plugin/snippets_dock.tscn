@@ -14,9 +14,6 @@
 anchor_right = 1.0
 anchor_bottom = 1.0
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="menu" type="VBoxContainer" parent="."]
 anchor_right = 1.0
@@ -104,8 +101,10 @@ margin_right = 1024.0
 margin_bottom = 600.0
 
 [node name="FileDialog" type="FileDialog" parent="."]
-margin_right = 275.0
-margin_bottom = 367.0
+margin_left = 190.0
+margin_top = 54.0
+margin_right = 609.0
+margin_bottom = 444.0
 size_flags_vertical = 3
 window_title = "Open a Directory"
 resizable = true

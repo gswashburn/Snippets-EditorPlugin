@@ -1,0 +1,37 @@
+Snippets are small pieces of code you use over and over in your game development lifecycle.
+This plugin allows you to copy and paste them to your current game script editor. it also
+allows you to add new snippets to list by copying code from script editor and pasting as snippet files.
+Snippet files must be saved with .txt extension.
+
+[b]Icons: (Left - Right)[/b]
+Select Snippets Folder [img]res://addons/snippets_plugin/icon_filesystem.svg[/img] - Select the folder your snippets are stored in.
+Refresh Snippets Folder [img]res://addons/snippets_plugin/icon_reload.svg[/img] - Refresh Snippets List if files added externally to folder.
+Copy Snippet to Clipboard [img]res://addons/snippets_plugin/icon_action_copy.svg[/img] - Copies selected snippet to clipboard for pasting in script editor.
+Add Snippet to List [img]res://addons/snippets_plugin/icon_script_create.svg[/img] - Copy clipboard to snippet file. File must have ".txt" extension.
+Delete Snippet from List [img]res://addons/snippets_plugin/icon_remove.svg[/img] - Delete the selected snippet from list and folder.
+Snippet Plugin Help [img]res://addons/snippets_plugin/icon_help.svg[/img] - This file.
+
+[b]Snippet Fields[/b]
+If certain strings of characters called fields are placed in a snippet, then you can provide dynamic values
+to subsitute them with. In such cases, clicking on the [img]res://addons/snippets_plugin/icon_action_copy.svg[/img] will popup a window to provide
+values to all fields. When you click [code]Finish[/code], the snippet is copied to the clipboard with all of its fields subsitituted with their corresponding values.
+
+To define a field, you put the name of the field (no spaces) before a colon, followed by the prompt, surrounded by percent signs:
+[code]
+# Example field: %PROPERTY:Prompt%
+# Reference the field of the same name: %PROPERTY%
+[/code]
+
+The two-argument form defines the field, and the one-argument form references the field of the same name.
+
+[b]Right Mouse Click (Context Menu)[/b]
+Internal Editor - Edit the selected snippet with internal editor.
+External Editor -  Edit the selected snippet with external editor (editor settings).
+Show in File Manager - Open system file manager to snippets folder.
+
+After setting external editor, you must toggle Snippets plugin to inactive, then active.
+
+External Editor is setup in Editor Settings/Text Editor/External
+You only need to change the following fields. Leave "On" unchecked.
+Exec Path: [code]C:/Program Files/Notepad++/notepad++.exe[/code]
+Exec Flags: [code]{project} --goto {file}:{line}:{col} [/code]

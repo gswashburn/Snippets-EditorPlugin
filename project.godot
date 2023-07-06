@@ -10,11 +10,14 @@ config_version=4
 
 _global_script_classes=[  ]
 _global_script_class_icons={
-
 }
 
 [application]
 
 config/name="Snippet"
-run/main_scene="res://addons/snippets_plugin/snippets_dock.tscn"
+run/main_scene="res://Main.tscn"
 config/icon="res://icon.png"
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/Todo_Manager/plugin.cfg", "res://addons/godot-plugin-refresher/plugin.cfg", "res://addons/snippets_plugin/plugin.cfg" )

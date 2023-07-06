@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=13 format=2]
 
 [ext_resource path="res://addons/snippets_plugin/snippets_dock.gd" type="Script" id=1]
 [ext_resource path="res://addons/snippets_plugin/icon_filesystem.svg" type="Texture" id=2]
@@ -10,6 +10,8 @@
 [ext_resource path="res://addons/snippets_plugin/snippet_editor.tscn" type="PackedScene" id=8]
 [ext_resource path="res://addons/snippets_plugin/icon_search.svg" type="Texture" id=9]
 [ext_resource path="res://addons/snippets_plugin/params/snippet_params.tscn" type="PackedScene" id=10]
+[ext_resource path="res://addons/snippets_plugin/Help.gd" type="Script" id=11]
+[ext_resource path="res://addons/snippets_plugin/fonts/snippet_rich_label.tres" type="Theme" id=12]
 
 [node name="Snippets" type="Panel"]
 anchor_right = 1.0
@@ -126,6 +128,7 @@ margin_bottom = 463.0
 rect_min_size = Vector2( 100, 100 )
 window_title = "Snippets Plugin Help"
 resizable = true
+script = ExtResource( 11 )
 
 [node name="Label" type="RichTextLabel" parent="Help"]
 margin_left = 5.0
@@ -133,6 +136,7 @@ margin_top = 5.0
 margin_right = 700.0
 margin_bottom = 347.0
 mouse_filter = 2
+theme = ExtResource( 12 )
 bbcode_enabled = true
 bbcode_text = "Snippets are small pieces of code you use over and over in your game development lifecycle.
 This plugin allows you to copy and paste them to your current game script editor. it also
@@ -140,12 +144,25 @@ allows you to add new snippets to list by copying code from script editor and pa
 Snippet files must be saved with .txt extension.
 
 [b]Icons: (Left - Right)[/b]
-Select Snippets Folder - Select the folder your snippets are stored in.
-Refresh Snippets Folder - Refresh Snippets List if files added externally to folder.
-Copy Snippet to Clipboard - Copies selected snippet to clipboard for pasting in script editor.
-Add Snippet to List - Copy clipboard to snippet file. File must have \".txt\" extension.
-Delete Snippet from List - Delete the selected snippet from list and folder.
-Snippet Plugin Help - This file.
+Select Snippets Folder [img]res://addons/snippets_plugin/icon_filesystem.svg[/img] - Select the folder your snippets are stored in.
+Refresh Snippets Folder [img]res://addons/snippets_plugin/icon_reload.svg[/img] - Refresh Snippets List if files added externally to folder.
+Copy Snippet to Clipboard [img]res://addons/snippets_plugin/icon_action_copy.svg[/img] - Copies selected snippet to clipboard for pasting in script editor.
+Add Snippet to List [img]res://addons/snippets_plugin/icon_script_create.svg[/img] - Copy clipboard to snippet file. File must have \".txt\" extension.
+Delete Snippet from List [img]res://addons/snippets_plugin/icon_remove.svg[/img] - Delete the selected snippet from list and folder.
+Snippet Plugin Help [img]res://addons/snippets_plugin/icon_help.svg[/img] - This file.
+
+[b]Snippet Fields[/b]
+If certain strings of characters called fields are placed in a snippet, then you can provide dynamic values
+to subsitute them with. In such cases, clicking on the [img]res://addons/snippets_plugin/icon_action_copy.svg[/img] will popup a window to provide
+values to all fields. When you click [code]Finish[/code], the snippet is copied to the clipboard with all of its fields subsitituted with their corresponding values.
+
+To define a field, you put the name of the field (no spaces) before a colon, followed by the prompt, surrounded by percent signs:
+[code]
+# Example field: %PROPERTY:Prompt%
+# Reference the field of the same name: %PROPERTY%
+[/code]
+
+The two-argument form defines the field, and the one-argument form references the field of the same name.
 
 [b]Right Mouse Click (Context Menu)[/b]
 Internal Editor - Edit the selected snippet with internal editor.
@@ -156,9 +173,8 @@ After setting external editor, you must toggle Snippets plugin to inactive, then
 
 External Editor is setup in Editor Settings/Text Editor/External
 You only need to change the following fields. Leave \"On\" unchecked.
-Exec Path: C:/Program Files/Notepad++/notepad++.exe
-Exec Flags: {project} --goto {file}:{line}:{col} 
-
+Exec Path: [code]C:/Program Files/Notepad++/notepad++.exe[/code]
+Exec Flags: [code]{project} --goto {file}:{line}:{col} [/code]
 "
 text = "Snippets are small pieces of code you use over and over in your game development lifecycle.
 This plugin allows you to copy and paste them to your current game script editor. it also
@@ -166,12 +182,25 @@ allows you to add new snippets to list by copying code from script editor and pa
 Snippet files must be saved with .txt extension.
 
 Icons: (Left - Right)
-Select Snippets Folder - Select the folder your snippets are stored in.
-Refresh Snippets Folder - Refresh Snippets List if files added externally to folder.
-Copy Snippet to Clipboard - Copies selected snippet to clipboard for pasting in script editor.
-Add Snippet to List - Copy clipboard to snippet file. File must have \".txt\" extension.
-Delete Snippet from List - Delete the selected snippet from list and folder.
-Snippet Plugin Help - This file.
+Select Snippets Folder  - Select the folder your snippets are stored in.
+Refresh Snippets Folder  - Refresh Snippets List if files added externally to folder.
+Copy Snippet to Clipboard  - Copies selected snippet to clipboard for pasting in script editor.
+Add Snippet to List  - Copy clipboard to snippet file. File must have \".txt\" extension.
+Delete Snippet from List  - Delete the selected snippet from list and folder.
+Snippet Plugin Help  - This file.
+
+Snippet Fields
+If certain strings of characters called fields are placed in a snippet, then you can provide dynamic values
+to subsitute them with. In such cases, clicking on the  will popup a window to provide
+values to all fields. When you click Finish, the snippet is copied to the clipboard with all of its fields subsitituted with their corresponding values.
+
+To define a field, you put the name of the field (no spaces) before a colon, followed by the prompt, surrounded by percent signs:
+
+# Example field: %PROPERTY:Prompt%
+# Reference the field of the same name: %PROPERTY%
+
+
+The two-argument form defines the field, and the one-argument form references the field of the same name.
 
 Right Mouse Click (Context Menu)
 Internal Editor - Edit the selected snippet with internal editor.
@@ -184,7 +213,6 @@ External Editor is setup in Editor Settings/Text Editor/External
 You only need to change the following fields. Leave \"On\" unchecked.
 Exec Path: C:/Program Files/Notepad++/notepad++.exe
 Exec Flags: {project} --goto {file}:{line}:{col} 
-
 "
 __meta__ = {
 "_edit_lock_": true

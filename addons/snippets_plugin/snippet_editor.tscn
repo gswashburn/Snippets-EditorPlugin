@@ -7,6 +7,7 @@
 [ext_resource path="res://addons/snippets_plugin/icon_syntax.svg" type="Texture" id=5]
 
 [node name="snippet_editor" type="WindowDialog"]
+visible = true
 margin_left = 317.0
 margin_top = 85.0
 margin_right = 862.0
@@ -36,7 +37,6 @@ margin_right = 60.0
 margin_bottom = 22.0
 hint_tooltip = "Line Numbers"
 toggle_mode = true
-pressed = true
 icon = ExtResource( 3 )
 
 [node name="btnHighlight" type="Button" parent="vbox/menu"]
@@ -45,7 +45,6 @@ margin_right = 92.0
 margin_bottom = 22.0
 hint_tooltip = "Line Highlight"
 toggle_mode = true
-pressed = true
 icon = ExtResource( 4 )
 
 [node name="btnSyntax" type="Button" parent="vbox/menu"]
@@ -54,7 +53,6 @@ margin_right = 124.0
 margin_bottom = 22.0
 hint_tooltip = "Syntax Highlight"
 toggle_mode = true
-pressed = true
 icon = ExtResource( 5 )
 
 [node name="code" type="TextEdit" parent="vbox"]
